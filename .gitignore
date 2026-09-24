@@ -1,0 +1,5 @@
+.direnv/
+result
+/server
+/client
+.DS_Store
