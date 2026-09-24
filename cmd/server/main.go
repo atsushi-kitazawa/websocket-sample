@@ -67,6 +67,9 @@ func main() {
 				log.Printf("Manual push broadcast: %s", msg)
 				hub.BroadcastText(msg)
 			}
+			if err := scanner.Err(); err != nil && !errors.Is(err, io.EOF) {
+				log.Printf("Error reading stdin: %v", err)
+			}
 		}()
 		log.Println("Server stdin push enabled (type message and press Enter to broadcast to all clients)")
 	}
