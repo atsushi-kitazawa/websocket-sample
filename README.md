@@ -1,5 +1,8 @@
 # WebSocket 生TCP実装サンプル (Go)
 
+> **Developed with Antigravity**  
+> 本プロジェクトは、Google DeepMind の AI コーディングアシスタント **Antigravity** を活用したペアプログラミングによって実装されました。プロトコル設計・タスク計画から Nix 開発環境の構築、TDD による RFC 6455 準拠コアロジックおよびサーバープッシュ通知の実装まで一貫して行われています。
+
 Go言語の標準ライブラリ（`net`, `crypto/sha1`, `encoding/base64` 等）のみを使用し、サードパーティ製ライブラリを一切使わずに生 TCP ソケットから RFC 6455 準拠の WebSocket サーバーおよびクライアントを実装したサンプルプロジェクトです。
 
 ## 特徴
@@ -75,3 +78,21 @@ nix develop --command go run ./cmd/client/main.go -addr localhost:8080
 ```bash
 nix develop --command go run ./cmd/client/main.go -addr localhost:8080 -msg "Hello, WebSocket!"
 ```
+
+---
+
+## 開発プロセス (Developed with Antigravity)
+
+本プロジェクトの設計・実装・テスト・ドキュメント作成は、AI コーディングアシスタント **Antigravity** を用いた段階的なペアプログラミングによって行われました。
+
+1. **仕様整理とタスク計画 ([TODO.md](TODO.md))**:
+   - サードパーティ製ライブラリを排除し、Go 標準ライブラリのみで RFC 6455 を実装するためのフェーズ別計画を策定。
+2. **プロトコル解説ドキュメントの生成 ([websocket.md](websocket.md))**:
+   - HTTP Upgrade ハンドシェイクの仕組み、バイナリフレームのビット構造、セキュリティ上のマスク処理の必要性（キャッシュポイズニング防止）などを体系的にドキュメント化。
+3. **Nix Flake による環境構築 ([flake.nix](flake.nix))**:
+   - ホスト環境を汚さない独立した Go 開発環境（Go 1.26, gopls, golangci-lint）を構築。
+4. **ユニットテスト駆動の実装**:
+   - RFC 6455 既知のテストベクタによるハンドシェイク検証、可変長ペイロード（125/126/127）の境界値テスト、マスク対称性テストを実装し、全テスト合格を確認しながらコア処理を構築。
+5. **機能追加（サーバープッシュ通知 & Hub パターン）**:
+   - ゴルーチン競合を防ぐスレッドセーフな `Hub` および `Client.WritePump` を導入し、手動コンソールプッシュ・定期 Ticker プッシュ・チャット型ブロードキャストを実現。
+
